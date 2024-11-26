@@ -1,85 +1,98 @@
-// Declaración de variables y constantes
-const presupuestoLimite = 500;  // Presupuesto máximo permitido
-let gastos = [];  // Array para almacenar los gastos
+// Variables y constantes
+const presupuestoLimite = 500;
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// Función para ingresar gastos
-function agregarGasto() {
-    let nuevoGasto = parseFloat(prompt("Ingresa un gasto (en número):"));
-    
-    // Verificar que el gasto ingresado sea un número válido
-    if (!isNaN(nuevoGasto) && nuevoGasto > 0) {
-        gastos.push(nuevoGasto);
-        console.log("Gasto añadido correctamente:", nuevoGasto);
-        alert("Gasto añadido correctamente: $" + nuevoGasto);
-    } else {
-        alert("Por favor, ingresa un valor válido.");
-    }
+// Productos disponibles con id, nombre, precio y categoría
+const productos = [
+    { id: 1, nombre: "Cuaderno", precio: 200, categoria: "Estudio" },
+    { id: 2, nombre: "Birome", precio: 100, categoria: "Escritura" },
+    { id: 3, nombre: "Lápiz", precio: 50, categoria: "Escritura" },
+    { id: 4, nombre: "Carpeta", precio: 300, categoria: "Estudio" },
+    { id: 5, nombre: "Marcador", precio: 250, categoria: "Escritura" },
+    { id: 6, nombre: "Pizarra", precio: 400, categoria: "Lectura" },
+];
+
+// Elementos del DOM
+const listaCarrito = document.getElementById("listaCarrito");
+const totalCarritoElem = document.getElementById("totalCarrito");
+const alertaPresupuesto = document.getElementById("alertaPresupuesto");
+const limpiarCarritoBtn = document.getElementById("limpiarCarrito");
+const seccionProductos = document.getElementById("productos");
+
+// Funciones
+function renderizarProductos() {
+    productos.forEach(producto => {
+        const div = document.createElement("div");
+        div.className = "producto";
+        div.innerHTML = `
+            <p><strong>${producto.nombre}</strong></p>
+            <p>Categoría: ${producto.categoria}</p>
+            <p>Precio: $${producto.precio}</p>
+            <button class="btn-agregar" data-id="${producto.id}">Agregar</button>
+        `;
+        seccionProductos.appendChild(div);
+    });
+
+    // Asignar eventos a los botones después de renderizar
+    const botonesAgregar = document.querySelectorAll(".btn-agregar");
+    botonesAgregar.forEach(boton => boton.addEventListener("click", agregarProducto));
 }
 
-// Función para calcular el total de gastos
-function calcularTotalGastos() {
+function actualizarDOM() {
+    // Limpiar lista del carrito
+    listaCarrito.innerHTML = "";
     let total = 0;
-    for (let gasto of gastos) {
-        total += gasto;
-    }
-    console.log("El total de los gastos es: $" + total);
-    alert("El total de los gastos es: $" + total);
-    return total;
-}
 
-// Función para calcular el promedio de los gastos
-function calcularPromedioGastos() {
-    if (gastos.length === 0) {
-        alert("No hay gastos para calcular el promedio.");
-        return 0;
-    }
+    // Agregar cada producto al DOM
+    carrito.forEach((item, index) => {
+        total += item.precio;
 
-    let total = calcularTotalGastos();
-    let promedio = total / gastos.length;
-    console.log("El promedio de los gastos es: $" + promedio.toFixed(2));
-    alert("El promedio de los gastos es: $" + promedio.toFixed(2));
-    return promedio;
-}
+        const li = document.createElement("li");
+        li.textContent = `${item.nombre} - $${item.precio}`;
 
-// Función para verificar si el presupuesto ha sido excedido
-function verificarPresupuesto() {
-    let total = calcularTotalGastos();
+        // Botón para eliminar producto
+        const eliminarBtn = document.createElement("button");
+        eliminarBtn.textContent = "Eliminar";
+        eliminarBtn.addEventListener("click", () => eliminarProducto(index));
+        li.appendChild(eliminarBtn);
+
+        listaCarrito.appendChild(li);
+    });
+
+    // Actualizar total y presupuesto
+    totalCarritoElem.textContent = total;
     if (total > presupuestoLimite) {
-        console.log("Has excedido el presupuesto de $" + presupuestoLimite + ". Total gastado: $" + total);
-        alert("¡Cuidado! Has excedido el presupuesto de $" + presupuestoLimite + ". Total gastado: $" + total);
+        alertaPresupuesto.classList.remove("hidden");
     } else {
-        console.log("Estás dentro del presupuesto.");
-        alert("Estás dentro del presupuesto.");
+        alertaPresupuesto.classList.add("hidden");
     }
+
+    // Guardar en localStorage
+    localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// Interacción con el usuario
-function iniciarSimulador() {
-    let opcion;
-    do {
-        opcion = prompt("Tu presupuesto es de $ 500. Selecciona una opción:\n1. Agregar Gasto\n2. Calcular Total de Gastos\n3. Calcular Promedio de Gastos\n4. Verificar Presupuesto\n5. Salir");
+function agregarProducto(e) {
+    const idProducto = parseInt(e.target.getAttribute("data-id"));
+    const producto = productos.find(p => p.id === idProducto);
 
-        switch (opcion) {
-            case "1":
-                agregarGasto();
-                break;
-            case "2":
-                calcularTotalGastos();
-                break;
-            case "3":
-                calcularPromedioGastos();
-                break;
-            case "4":
-                verificarPresupuesto();
-                break;
-            case "5":
-                alert("Saliendo del simulador. ¡Gracias por usarlo!");
-                break;
-            default:
-                alert("Opción no válida, por favor selecciona de nuevo.");
-        }
-    } while (opcion !== "5");
+    carrito.push(producto);
+    actualizarDOM();
 }
 
-// Llamada para iniciar el simulador
-iniciarSimulador();
+function eliminarProducto(index) {
+    carrito.splice(index, 1);
+    actualizarDOM();
+}
+
+function limpiarCarrito() {
+    carrito = [];
+    localStorage.removeItem("carrito");
+    actualizarDOM();
+}
+
+// Eventos
+limpiarCarritoBtn.addEventListener("click", limpiarCarrito);
+
+// Inicialización
+renderizarProductos();
+actualizarDOM();
