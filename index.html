@@ -1,36 +1,29 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compras</title>
+    <title>E-commerce Simulador</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Carrito de Compras</h1>
-        <p>Presupuesto límite: $<span id="presupuesto">500</span></p>
+        <h1>E-commerce Simulador</h1>
     </header>
-    
     <main>
-        <section id="productos">
-            <h2>Productos Disponibles</h2>
-            <!-- Productos generados dinámicamente desde JS -->
+        <section id="productos" class="productos-container">
+            <!-- Los productos se generarán aquí dinámicamente -->
         </section>
-
         <section id="carrito">
             <h2>Carrito de Compras</h2>
             <ul id="listaCarrito"></ul>
-            <p>Total gastado: $<span id="totalCarrito">0</span></p>
-            <p id="alertaPresupuesto" class="hidden">¡Has excedido el presupuesto!</p>
-            <button id="limpiarCarrito">Limpiar Carrito</button>
+            <p>Total: $<span id="totalCarrito">0</span></p>
+            <p>Presupuesto disponible: $<span id="presupuestoRestante">1000</span></p>
+            <button id="finalizarCompra" class="btn-finalizar">Finalizar Compra</button>
+            <p id="mensajeError" class="mensaje-error"></p>
         </section>
     </main>
-
-    <footer>
-        <p>Carrito de compras - Entrega 2</p>
-    </footer>
-
     <script src="main.js"></script>
 </body>
 </html>
+

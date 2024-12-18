@@ -1,0 +1,8 @@
+[
+    { "id": 1, "nombre": "Cuaderno", "precio": 200, "categoria": "Estudio" },
+    { "id": 2, "nombre": "Birome", "precio": 100, "categoria": "Escritura" },
+    { "id": 3, "nombre": "Lápiz", "precio": 50, "categoria": "Escritura" },
+    { "id": 4, "nombre": "Carpeta", "precio": 300, "categoria": "Estudio" },
+    { "id": 5, "nombre": "Marcador", "precio": 250, "categoria": "Escritura" },
+    { "id": 6, "nombre": "Pizarra", "precio": 400, "categoria": "Lectura" }
+]
